@@ -46,8 +46,8 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM('active', 'inactive', 'banned', 'deleted')
     },
     isAdmin: {
-      type: Boolean,
-      default: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     }
   }, {
     timestamps: false

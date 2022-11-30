@@ -5,13 +5,11 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('cartItem', {
     id: {
-        type: DataTypes.UUID,
-        defaultValue: DataTypes.UUID,
-        primaryKey : true
-      },
-    id: {
-        type: DataTypes.INTEGER
-      },
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUID,
+      primaryKey: true
+    }
+  }, {
+    timestamps: false
   });
-
 };

@@ -18,8 +18,8 @@ const router = Router();
 router.use("/brand", brand);
 router.use("/cart", cart);
 router.use("/cartItem", cartItem);
-router.use("/category", category);
-router.use("/location",location);
+router.use("/categories", category);
+router.use("/locations",location);
 router.use("/products",product);
 router.use("/users",users);
 

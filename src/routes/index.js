@@ -5,10 +5,10 @@ const { Router } = require("express");
 const brand = require("./brand.js");
 const cart = require("./cart.js");
 const cartItem = require("./cartItem.js");
-const category = require("./cartItem.js");
-const location = require("./cartItem.js");
-const product = require("./cartItem.js");
-const users = require("./cartItem.js");
+const category = require("./category.js");
+const location = require("./location.js");
+const product = require("./product.js");
+const users = require("./users.js");
 
 const router = Router();
 
@@ -20,7 +20,7 @@ router.use("/cart", cart);
 router.use("/cartItem", cartItem);
 router.use("/category", category);
 router.use("/location",location);
-router.use("product",product);
-router.use("users",users);
+router.use("/products",product);
+router.use("/users",users);
 
 module.exports = router;

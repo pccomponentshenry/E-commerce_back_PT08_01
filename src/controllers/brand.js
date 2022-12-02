@@ -1,6 +1,27 @@
 const { Op } = require('sequelize');
 const { Brand } = require('../db');
+const axios = require ('axios');
 const { sortArrayOfObjets } = require('../utils');
+
+async function preloadBrands() {
+  let test = await Brand.findAll({});
+  if (test.length === 0) {
+    axios
+    .get('https://6389e394c5356b25a20ba4fa.mockapi.io/brand')
+    .then(data => {
+      console.log( data.data[0].results)
+      let bulk = data.data[0].results.map(c => ({
+       name: c.name
+      }))
+      Brand.bulkCreate(bulk);
+    })
+    .then(console.log('Brand loades.'))
+    .catch(error => {
+      console.log(error.message);
+    });
+  }
+}
+preloadBrands();
 
 const getBrands = async (req, res) => {
   try {
@@ -10,5 +31,4 @@ const getBrands = async (req, res) => {
     res.status(400).send(error);
   }
 }
-
 module.exports = { getBrands };

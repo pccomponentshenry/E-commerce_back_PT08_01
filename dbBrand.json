@@ -1,0 +1,70 @@
+{
+    "brand": [
+      {
+        "name": "Asus"
+      },
+      {
+        "name": "Genius"
+      },
+      {
+        "name": "Logitech"
+      },
+      {
+        "name": "Redragon"
+      },
+      {
+        "name": "Trust"
+      },
+      {
+        "name": "3M"
+      },
+      {
+        "name": "3M"
+      },
+      {
+        "name": "AOC"
+      },
+      {
+        "name": "AOpen"
+      },
+      {
+        "name": "Acer"
+      },
+      {
+        "name": "Adesso"
+      },
+      {
+        "name": "Aiwa"
+      },
+      {
+        "name": "Evga"
+      },
+      {
+        "name": "Gibabyte"
+      },
+      {
+        "name": "MSI"
+      },
+      {
+        "name": "ZOtac"
+      },
+      {
+        "name": "AMD"
+      },
+      {
+        "name": "ASRock"
+      },
+      {
+        "name": "Dell"
+      },
+      {
+        "name": "Nvidia"
+      },
+      {
+        "name": "Radeon"
+      },
+      {
+        "name": "Sapphire"
+      }
+    ]
+}

@@ -1,19 +1,19 @@
-const { Op } = require('sequelize');
+//const { Op } = require('sequelize');
 const { Brand } = require('../db');
 const axios = require ('axios');
 const { sortArrayOfObjets } = require('../utils');
 
 async function preloadBrands() {
-  let test = await Brand.findAll({});
+  let test = [];
   if (test.length === 0) {
     axios
     .get('https://6389e394c5356b25a20ba4fa.mockapi.io/brand')
     .then(data => {
-      console.log( data.data[0].results)
-      let bulk = data.data[0].results.map(c => ({
+      //console.log( data.data[0].results)
+      data.data[0].results.map(c => Brand.create ({
        name: c.name
       }))
-      Brand.bulkCreate(bulk);
+     // Brand.bulkCreate(bulk);
     })
     .then(console.log('Brand loades.'))
     .catch(error => {

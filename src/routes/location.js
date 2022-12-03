@@ -6,8 +6,7 @@ const { Location } = require('../db');
 
 const router = Router();
 async function preloadLocation() {
-    let test = []; 
-    if (test.length === 0) {
+   
       axios
       .get('https://6389e394c5356b25a20ba4fa.mockapi.io/LOCATION')
       .then(data => {
@@ -21,7 +20,7 @@ async function preloadLocation() {
       .catch(error => {
         console.log(error.message);
       });
-    } 
+    
   }
   preloadLocation();
 

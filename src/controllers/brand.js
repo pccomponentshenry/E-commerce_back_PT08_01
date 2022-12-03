@@ -4,8 +4,7 @@ const axios = require ('axios');
 const { sortArrayOfObjets } = require('../utils');
 
 async function preloadBrands() {
-  let test = [];
-  if (test.length === 0) {
+ 
     axios
     .get('https://6389e394c5356b25a20ba4fa.mockapi.io/brand')
     .then(data => {
@@ -19,7 +18,7 @@ async function preloadBrands() {
     .catch(error => {
       console.log(error.message);
     });
-  }
+  
 }
 preloadBrands();
 

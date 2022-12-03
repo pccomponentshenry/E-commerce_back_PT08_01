@@ -27,16 +27,6 @@ router.use("/locations", location);
 router.use("/products", product);
 router.use("/users", users);
 
-router.get('/populate', async (req, res) => {
-  try {
-    await populateLocations();
-    await populateCategories();
-    await populateBrands();
-    await populateProducts();
-    res.status(200).send({ message: 'Database populated!' })
-  } catch (error) {
-    res.status(400).send({ message: error })
-  }
-});
+
 
 module.exports = router;

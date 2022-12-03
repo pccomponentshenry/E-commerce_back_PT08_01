@@ -7,4 +7,11 @@ const sortArrayOfObjets = (array, parameterToOrder) => {
   })
 };
 
-module.exports = { sortArrayOfObjets };
+const sortArray = (arr) => {
+  return arr.sort((a, b) => {
+    return a.localeCompare(b, undefined, { sensitivity: 'base' });
+  });
+}
+
+
+module.exports = { sortArrayOfObjets, sortArray };

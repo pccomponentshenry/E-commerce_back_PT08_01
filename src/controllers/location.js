@@ -1,6 +1,20 @@
 const { Op } = require('sequelize');
 const { Location } = require('../db');
-const { sortArrayOfObjets } = require('../utils');
+const { sortArrayOfObjets, sortArray } = require('../utils');
+const jsonLocations = require("../json/locations.json");
+
+const populateLocations = async () => {
+  let locations = [];
+  for (l of jsonLocations) {
+    if (l.categoria === "Provincia") {
+      locations.push(l.iso_nombre);
+    }
+  }
+  sortArray(locations);
+  for (l of locations) {
+    await Location.create({ name: l });
+  }
+}
 
 const getLocations = async (req, res) => {
   try {
@@ -11,4 +25,4 @@ const getLocations = async (req, res) => {
   }
 }
 
-module.exports = { getLocations };
+module.exports = { getLocations, populateLocations };

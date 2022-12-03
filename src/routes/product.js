@@ -4,20 +4,13 @@ const { populateCategories } = require("../controllers/category");
 const { populateProducts, allProductDB } = require("../controllers/product");
 
 const router = Router();
-const axios = require('axios');
 
-router.get('/populate', async (req, res) => {
-    try {
-        await populateCategories();
-        await populateBrands();
-        await populateProducts();
-        res.status(200).send({ message: 'Database populated!' })
-    } catch (error) {
-        res.status(400).send({ message: error })
-    }
-});
+
 
 router.get('/', async (req, res, next) => {
+    await populateBrands();
+    await populateCategories();
+    await populateProducts();
     let { name } = req.query;
     const products = await allProductDB()
     try {

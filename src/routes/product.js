@@ -4,31 +4,7 @@ const { populateCategories } = require("../controllers/category");
 const { populateProducts, allProductDB } = require("../controllers/product");
 
 const router = Router();
-const axios = require ('axios');
-
-async function preloadProducts() {
-    
-      axios
-      .get('https://6389e394c5356b25a20ba4fa.mockapi.io/products')
-      .then(data => {
-         //console.log('holaaa', data.data)
-         data.data.map(c => Product.create({
-         title: c.title,
-         img: c.img,
-         price: c.price,
-         stock: c.stock,
-         description: c.description, 
-
-        })
-        )
-      })
-      .then(console.log('Products loades.'))
-      .catch(error => {
-        console.log(error.message);
-      });
-    
-  }
-  preloadProducts();
+const axios = require('axios');
 
 router.get('/populate', async (req, res) => {
     try {

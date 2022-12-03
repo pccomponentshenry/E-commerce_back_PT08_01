@@ -1,6 +1,19 @@
 const { Op } = require('sequelize');
 const { Category } = require('../db');
 const { sortArrayOfObjets } = require('../utils');
+const jsonProducts = require("../json/all.json");
+
+const populateCategories = async () => {
+  let categories = [];
+  for (p of jsonProducts) {
+    if (!categories.includes(p.category)) {
+      categories.push(p.category);
+    }
+  }
+  for (c of categories) {
+    await Category.create({ name: c });
+  }
+}
 
 const getCategories = async (req, res) => {
   try {
@@ -11,4 +24,4 @@ const getCategories = async (req, res) => {
   }
 }
 
-module.exports = { getCategories };
+module.exports = { getCategories, populateCategories };

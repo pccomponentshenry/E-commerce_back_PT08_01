@@ -1,30 +1,7 @@
 const { Product, Category, Brand } = require('../db');
 const jsonProducts = require("../json/all.json");
-
-const populateCategories = async () => {
-  await Category.create({ name: 'Case Fan' });
-  await Category.create({ name: 'Case' });
-  await Category.create({ name: 'CPU Fan' });
-  await Category.create({ name: 'GPU' });
-  await Category.create({ name: 'Keyboard' });
-  await Category.create({ name: 'Motherboard' });
-  await Category.create({ name: 'Mouse' });
-  await Category.create({ name: 'Processor' });
-  await Category.create({ name: 'RAM' });
-  await Category.create({ name: 'Storage' });
-}
-
-const populateBrands = async () => {
-  let brands = [];
-  for (p of jsonProducts) {
-    if (!brands.includes(p.brand)) {
-      brands.push(p.brand);
-    }
-  }
-  for (b of brands) {
-    await Brand.create({ name: b });
-  }
-}
+const { populateBrands } = require('./brand');
+const { populateCategories } = require('./category');
 
 const populateProducts = async () => {
   for (p of jsonProducts) {
@@ -34,10 +11,19 @@ const populateProducts = async () => {
   }
 }
 
-const populateDB = async () => {
-  await populateCategories();
-  await populateBrands();
-  await populateProducts();
+const allProductDB = async () => {
+  return await Product.findAll({
+    include: [
+      {
+        model: Category,
+        attributes: ['name']
+      },
+      {
+        model: Brand,
+        attributes: ['name']
+      },
+    ]
+  });
 }
 
-module.exports = populateDB;
+module.exports = { populateProducts, allProductDB };

@@ -1,6 +1,8 @@
 const { Router } = require("express");
-const populateDB = require("../controllers/product");
-const { Product, Category, Brand } = require('../db');
+const { populateBrands } = require("../controllers/brand");
+const { populateCategories } = require("../controllers/category");
+const { populateProducts, allProductDB } = require("../controllers/product");
+
 const router = Router();
 const axios = require ('axios');
 
@@ -28,22 +30,16 @@ async function preloadProducts() {
   }
   preloadProducts();
 
-router.get('/populateDB', populateDB);
-
-const allProductDB = async () => {
-    return await Product.findAll({
-        include: [
-            {
-                model: Category,
-                attributes: ['name']
-            },
-            {
-                model: Brand,
-                attributes: ['name']
-            },
-        ]
-    });
-}
+router.get('/populate', async (req, res) => {
+    try {
+        await populateCategories();
+        await populateBrands();
+        await populateProducts();
+        res.status(200).send({ message: 'Database populated!' })
+    } catch (error) {
+        res.status(400).send({ message: error })
+    }
+});
 
 router.get('/', async (req, res, next) => {
     let { name } = req.query;
@@ -58,6 +54,7 @@ router.get('/', async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+    next();
 });
 
 router.get('/:id', async (req, res) => {
@@ -83,7 +80,6 @@ router.get('/:id', async (req, res) => {
     }
 
 });
-
 
 
 module.exports = router;

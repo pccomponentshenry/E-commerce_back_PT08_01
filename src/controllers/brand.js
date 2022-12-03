@@ -2,6 +2,19 @@
 const { Brand } = require('../db');
 const axios = require ('axios');
 const { sortArrayOfObjets } = require('../utils');
+const jsonProducts = require("../json/all.json");
+
+const populateBrands = async () => {
+  let brands = [];
+  for (p of jsonProducts) {
+    if (!brands.includes(p.brand)) {
+      brands.push(p.brand);
+    }
+  }
+  for (b of brands) {
+    await Brand.create({ name: b });
+  }
+}
 
 async function preloadBrands() {
  
@@ -30,4 +43,5 @@ const getBrands = async (req, res) => {
     res.status(400).send(error);
   }
 }
-module.exports = { getBrands };
+
+module.exports = { getBrands, populateBrands };

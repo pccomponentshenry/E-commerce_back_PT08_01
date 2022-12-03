@@ -4,8 +4,7 @@ const router = Router();
 const axios = require ('axios');
 
 async function preloadProducts() {
-    let test = []; 
-    if (test.length === 0) {
+    
       axios
       .get('https://6389e394c5356b25a20ba4fa.mockapi.io/products')
       .then(data => {
@@ -15,15 +14,16 @@ async function preloadProducts() {
          img: c.img,
          price: c.price,
          stock: c.stock,
-         description: c.description
-        }))
-       //await Promise.all(products)
+         description: c.description, 
+
+        })
+        )
       })
       .then(console.log('Products loades.'))
       .catch(error => {
         console.log(error.message);
       });
-    } 
+    
   }
   preloadProducts();
 

@@ -2,6 +2,7 @@ const { Router } = require("express");
 const { populateBrands } = require("../controllers/brand");
 const { populateCategories } = require("../controllers/category");
 const { populateProducts, allProductDB } = require("../controllers/product");
+const { Product } = require('../db');
 
 const router = Router();
 const axios = require ('axios');

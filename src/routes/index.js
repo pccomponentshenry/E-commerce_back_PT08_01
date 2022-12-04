@@ -13,6 +13,7 @@ const category = require("./category.js");
 const location = require("./location.js");
 const product = require("./product.js");
 const users = require("./users.js");
+const postProducts=require('./postProducts.js')
 
 const router = Router();
 
@@ -26,7 +27,7 @@ router.use("/categories", category);
 router.use("/locations", location);
 router.use("/products", product);
 router.use("/users", users);
-
+router.use("/products", postProducts);
 
 
 module.exports = router;

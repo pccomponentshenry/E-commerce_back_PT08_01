@@ -1,11 +1,11 @@
 const { Router } = require("express");
 const { populateBrands } = require("../controllers/brand");
 const { populateCategories } = require("../controllers/category");
-const { populateProducts, allProductDB } = require("../controllers/product");
+const { populateProducts, allProductDB, getFilteredProducts } = require("../controllers/product");
 
 const router = Router();
 
-
+router.get("/filter", getFilteredProducts);
 
 router.get('/', async (req, res, next) => {
     await populateBrands();

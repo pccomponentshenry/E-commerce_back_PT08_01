@@ -1,8 +1,4 @@
 const { Router } = require("express");
-const { populateLocations } = require("../controllers/location.js");
-const { populateCategories } = require("../controllers/category.js");
-const { populateBrands } = require("../controllers/brand.js");
-const { populateProducts } = require("../controllers/product.js");
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
 
@@ -13,7 +9,7 @@ const category = require("./category.js");
 const location = require("./location.js");
 const product = require("./product.js");
 const users = require("./users.js");
-const postProducts=require('./postProducts.js')
+const populate = require("./populate.js");
 
 const router = Router();
 
@@ -27,7 +23,6 @@ router.use("/categories", category);
 router.use("/locations", location);
 router.use("/products", product);
 router.use("/users", users);
-router.use("/products", postProducts);
 
-
+router.use("/populateDB", populate);
 module.exports = router;

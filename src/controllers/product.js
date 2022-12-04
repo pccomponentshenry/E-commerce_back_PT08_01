@@ -11,7 +11,7 @@ const populateProducts = async () => {
   }
 }
 
-const allProductDB = async () => {
+const allProductsDB = async () => {
   return await Product.findAll({
     include: [
       {
@@ -24,6 +24,48 @@ const allProductDB = async () => {
       },
     ]
   });
+}
+
+
+const getAllProducts = async (req, res, next) => {
+
+  const { name } = req.query;
+  const products = await allProductsDB();
+  try {
+    if (name) {
+      let productName = await products.filter(e => e.title.toLowerCase().includes(name.toLowerCase()));
+      (productName.length > 0 ? res.json(productName) : res.status(404).json({ message: 'Product not found' }))
+    } else {
+      products.length > 0 ? res.json(products) : res.status(404).json({ message: 'No products' })
+    };
+  } catch (error) {
+    next(error);
+  }
+  next();
+}
+
+const getProductById = async (req, res) => {
+
+  const { id } = req.params;
+  const products = await allProductsDB()
+  try {
+    products.forEach(el => {
+      if (el.id == id) {
+        res.json({
+          id: el.id,
+          title: el.title,
+          img: el.img || el.img.forEach(i => { return i }),
+          price: el.price,
+          description: el.description,
+          stock: el.stock,
+          category: el.category.name,
+          brand: el.brand.name
+        })
+      }
+    })
+  } catch (error) {
+    res.status(404).send(error);
+  }
 }
 
 const getFilteredProducts = async (req, res) => {
@@ -56,12 +98,45 @@ const getFilteredProducts = async (req, res) => {
     sqlQuery += ` AND p.price BETWEEN ${min_price} AND ${max_price}`;
   }
 
-  const products = await conn.query(sqlQuery, {
-    model: Product,
-    mapToModel: true
-  });
+  try {
+    const products = await conn.query(sqlQuery, {
+      model: Product,
+      mapToModel: true
+    });
+    res.status(200).send(products);
+  } catch (error) {
+    res.status(404).send("No products found");
+  }
 
-  res.status(200).send(products);
 }
 
-module.exports = { populateProducts, allProductDB, getFilteredProducts };
+const postProducts = async () => {
+  const { name, brand, stock, price, description, img, category } = req.body;
+  try {
+    const findBrand = await Brand.findOne({
+      where: {
+        name: brand,
+      }
+    })
+    const findCategory = await Category.findOne({
+      where: {
+        name: category,
+      }
+    })
+    await Product.create({
+      title: name,
+      img,
+      price,
+      description,
+      stock,
+      categoryId: findCategory.dataValues.id,
+      brandId: findBrand.dataValues.id,
+    },
+    )
+    res.send('Product created successfully')
+  } catch (error) {
+    res.status(404).json({ "error": error.message })
+  }
+}
+
+module.exports = { populateProducts, getAllProducts, getProductById, getFilteredProducts, postProducts };

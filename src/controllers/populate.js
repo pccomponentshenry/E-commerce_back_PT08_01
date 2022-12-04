@@ -12,8 +12,9 @@ const populateDB = async (req, res) => {
       await populateCategories();
       await populateLocations();
       await populateProducts();
-      res.status(200).send("Database populated");
+      return res.status(200).send("Database populated");
     }
+    res.status(200).send("Database already populated");
   } catch (error) {
     res.status(400).send("Database error: ", error);
   }

@@ -110,7 +110,7 @@ const getFilteredProducts = async (req, res) => {
 
 }
 
-const postProducts = async () => {
+const postProducts = async (req, res) => {
   const { name, brand, stock, price, description, img, category } = req.body;
   try {
     const findBrand = await Brand.findOne({

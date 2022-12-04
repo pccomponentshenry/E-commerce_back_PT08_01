@@ -1,4 +1,3 @@
-const { Op } = require('sequelize');
 const { Location } = require('../db');
 const { sortArrayOfObjets, sortArray } = require('../utils');
 const jsonLocations = require("../json/locations.json");

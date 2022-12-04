@@ -23,6 +23,6 @@ router.use("/categories", category);
 router.use("/locations", location);
 router.use("/products", product);
 router.use("/users", users);
-router.use("/populateDB", populate);
 
+router.use("/populateDB", populate);
 module.exports = router;

@@ -13,5 +13,11 @@ const sortArray = (arr) => {
   });
 }
 
+const insertIntoString = (originalStr, addStr, onWord) => {
+  const arrSQL = originalStr.split(' ');
+  const idxFROM = arrSQL.indexOf(onWord);
+  arrSQL.splice(idxFROM, 0, addStr);
+  return arrSQL.join(' ');
+}
 
-module.exports = { sortArrayOfObjets, sortArray };
+module.exports = { sortArrayOfObjets, sortArray, insertIntoString };

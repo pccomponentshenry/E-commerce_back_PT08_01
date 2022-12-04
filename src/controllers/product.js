@@ -26,6 +26,7 @@ const allProductsDB = async () => {
   });
 }
 
+
 const getAllProducts = async (req, res, next) => {
 
   const { name } = req.query;

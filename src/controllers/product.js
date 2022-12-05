@@ -7,7 +7,8 @@ const populateProducts = async () => {
   for (p of jsonProducts) {
     const category = await Category.findOne({ where: { name: p.category } });
     const brand = await Brand.findOne({ where: { name: p.brand } });
-    prod = await Product.create({ title: p?.title, img: p?.img, price: p?.price, description: p?.model, stock: Math.floor(Math.random() * 500), categoryId: category?.dataValues?.id, brandId: brand?.dataValues?.id })
+    if (p.price !== 0)
+      prod = await Product.create({ title: p?.title, img: p?.img, price: p?.price, description: p?.model, stock: Math.floor(Math.random() * 500), categoryId: category?.dataValues?.id, brandId: brand?.dataValues?.id })
   }
 }
 
@@ -47,7 +48,7 @@ const getAllProducts = async (req, res, next) => {
 const getProductById = async (req, res) => {
 
   const { id } = req.params;
-  const products = await allProductsDB()
+  const products = await allProductsDB();
   try {
     products.forEach(el => {
       if (el.id == id) {
@@ -73,17 +74,22 @@ const getFilteredProducts = async (req, res) => {
   const { category, brand } = req.query;
   let { min_price, max_price } = req.query;
 
-  let sqlQuery = 'SELECT p.id, p.title, p.img, p.price, p.description, p.stock FROM products AS p WHERE p.price <> -1';
+  let sqlQuery =
+    `SELECT p.id, p.title, p.img, p.price, p.description, p.stock, c.name AS category, b.name AS brand 
+  FROM products AS p
+  JOIN categories AS c ON p."categoryId" = c.id
+  JOIN brand AS b ON p."brandId" = b.id
+  WHERE p.price <> -1`;
 
   if (category) {
-    sqlQuery = insertIntoString(sqlQuery, ', c.name AS category', 'FROM');
-    sqlQuery = insertIntoString(sqlQuery, 'JOIN categories AS c ON p."categoryId" = c.id', 'WHERE');
+    // sqlQuery = insertIntoString(sqlQuery, ', c.name AS category', 'FROM');
+    // sqlQuery = insertIntoString(sqlQuery, 'JOIN categories AS c ON p."categoryId" = c.id', 'WHERE');
     sqlQuery += ` AND c.id = ${category}`;
   }
 
   if (brand) {
-    sqlQuery = insertIntoString(sqlQuery, ', b.name AS brand', 'FROM');
-    sqlQuery = insertIntoString(sqlQuery, 'JOIN brand AS b ON p."brandId" = b.id', 'WHERE');
+    // sqlQuery = insertIntoString(sqlQuery, ', b.name AS brand', 'FROM');
+    // sqlQuery = insertIntoString(sqlQuery, 'JOIN brand AS b ON p."brandId" = b.id', 'WHERE');
     sqlQuery += ` AND b.id = ${brand}`;
   }
 
@@ -139,4 +145,25 @@ const postProducts = async (req, res) => {
   }
 }
 
-module.exports = { populateProducts, getAllProducts, getProductById, getFilteredProducts, postProducts };
+const putProducts = async (req, res) => {
+  const { id } = req.params;
+  const { name, brand, stock, price, description, img, category } = req.body;
+
+  try {
+    let forUpdate = await Product.findByPk(id);
+    await forUpdate.update({
+      name,
+      brand,
+      stock,
+      price,
+      description,
+      img,
+      category
+    });
+    res.status(200).send(forUpdate)
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+}
+
+module.exports = { populateProducts, getAllProducts, getProductById, getFilteredProducts, postProducts, putProducts };

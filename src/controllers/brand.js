@@ -1,6 +1,4 @@
-//const { Op } = require('sequelize');
 const { Brand } = require('../db');
-const axios = require('axios');
 const { sortArrayOfObjets, sortArray } = require('../utils');
 const jsonProducts = require("../json/all.json");
 

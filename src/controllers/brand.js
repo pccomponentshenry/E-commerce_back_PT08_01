@@ -13,7 +13,9 @@ const populateBrands = async () => {
   }
   sortArray(brands);
   for (b of brands) {
-    await Brand.create({ name: b });
+    await Brand.findOrCreate({
+      where:{ name: b }
+  });
   }
 }
 

@@ -12,7 +12,9 @@ const populateCategories = async () => {
   }
   sortArray(categories);
   for (c of categories) {
-    await Category.create({ name: c });
+    await Category.findOrCreate({
+      where:{ name: c }
+  });
   }
 }
 

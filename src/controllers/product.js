@@ -134,9 +134,32 @@ const postProducts = async (req, res) => {
     },
     )
     res.send('Product created successfully')
+    
   } catch (error) {
     res.status(404).json({ "error": error.message })
   }
 }
 
-module.exports = { populateProducts, getAllProducts, getProductById, getFilteredProducts, postProducts };
+const putProducts = async (req,res) =>{
+  const {id} = req.params;
+  const { name, brand, stock, price, description, img, category } = req.body;
+
+  try {
+    let forUpdate = await Product.findByPk(id);
+    console.log(forUpdate, id)
+    await forUpdate.update({
+      name,
+      brand,
+      stock,
+      price,
+      description,
+      img,
+      category
+    });
+    res.status(200).send(forUpdate)
+  } catch (error) {
+    res.status(400).send(error.message)
+  }
+}
+
+module.exports = { populateProducts, getAllProducts, getProductById, getFilteredProducts, postProducts, putProducts };

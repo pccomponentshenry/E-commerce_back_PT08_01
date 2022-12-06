@@ -7,6 +7,7 @@ router.get("/filter", getFilteredProducts);
 router.get("/:id", getProductById);
 router.get("/", getAllProducts);
 router.post("/", postProducts);
-router.put("/", putProducts);
+router.put("/:id", putProducts);
+
 
 module.exports = router;

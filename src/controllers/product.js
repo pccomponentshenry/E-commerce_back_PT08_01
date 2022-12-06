@@ -149,19 +149,30 @@ const postProducts = async (req, res) => {
 const putProducts = async (req, res) => {
   const { id } = req.params;
   const { name, brand, stock, price, description, img, category } = req.body;
-
+console.log(req.body)
   try {
+    const findBrand = await Brand.findOne({
+      where: {
+        name: brand,
+      }
+    })
+    const findCategory = await Category.findOne({
+      where: {
+        name: category,
+      }
+    })
+
     let forUpdate = await Product.findByPk(id);
     await forUpdate.update({
-      name,
-      brand,
+      title: name,
       stock,
       price,
       description,
       img,
-      category
+      categoryId: findCategory.dataValues.id,
+      brandId: findBrand.dataValues.id,
     });
-    res.status(200).send(forUpdate)
+    res.status(200).send("Product update successfully")
   } catch (error) {
     res.status(400).send(error.message)
   }

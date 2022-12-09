@@ -10,6 +10,7 @@ const location = require("./location.js");
 const product = require("./product.js");
 const users = require("./users.js");
 const populate = require("./populate.js");
+const payment = require ("./payment.js")
 
 const router = Router();
 
@@ -23,6 +24,7 @@ router.use("/categories", category);
 router.use("/locations", location);
 router.use("/products", product);
 router.use("/users", users);
+router.use(payment);
 
 router.use("/populateDB", populate);
 module.exports = router;

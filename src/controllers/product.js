@@ -51,6 +51,7 @@ const getProductById = async (req, res) => {
   const products = await allProductsDB();
   try {
     products.forEach(el => {
+      
       if (el.id == id) {
         res.json({
           id: el.id,
@@ -60,7 +61,9 @@ const getProductById = async (req, res) => {
           description: el.description,
           stock: el.stock,
           category: el.category.name,
-          brand: el.brand.name
+          brand: el.brand.name,
+          creator: el.creator
+          
         })
       }
     })
@@ -117,7 +120,7 @@ const getFilteredProducts = async (req, res) => {
 }
 
 const postProducts = async (req, res) => {
-  const { name, brand, stock, price, description, img, category } = req.body;
+  const { name, brand, stock, price, description, img, category, creator } = req.body;
   try {
     const findBrand = await Brand.findOne({
       where: {
@@ -137,6 +140,7 @@ const postProducts = async (req, res) => {
       stock,
       categoryId: findCategory.dataValues.id,
       brandId: findBrand.dataValues.id,
+      creator,
     },
     )
     res.send('Product created successfully')

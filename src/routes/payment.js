@@ -9,7 +9,7 @@ const stripe = new Stripe(DB_PAYMENT);
 
 router.post('/api/checkout', async (req, res) =>{
     let product=req.body.products
-    console.log("body",product)
+    // console.log("body",product)
     let listProduct=[];
 
     product.forEach(p => {
@@ -18,9 +18,9 @@ router.post('/api/checkout', async (req, res) =>{
                 currency:"usd",
                 product_data:{
                     name:p.name,
-                    images:["https://www.fqingenieria.com/img/362585/foto.png"]
+                    images:p.images
                 },
-                unit_amount: p.total
+                unit_amount: p.price
               },
               quantity:p.quantity
         }

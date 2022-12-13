@@ -11,7 +11,9 @@ const populateLocations = async () => {
   }
   sortArray(locations);
   for (l of locations) {
-    await Location.create({ name: l });
+    await Location.findOrCreate({
+      where:{ name: l }
+  });
   }
 }
 

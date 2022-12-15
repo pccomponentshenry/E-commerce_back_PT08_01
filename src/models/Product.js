@@ -5,12 +5,11 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('product', {
     id: {
-      type: DataTypes.UUID,
-      allowNull: false,
+      type: DataTypes.SMALLINT,
       primaryKey: true,
-      defaultValue: DataTypes.UUIDV4,
+      autoIncrement: true
     },
-    creator:{
+    creator: {
       type: DataTypes.STRING,
       defaultValue: "admin"
     },

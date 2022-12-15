@@ -51,7 +51,7 @@ const getProductById = async (req, res) => {
   const products = await allProductsDB();
   try {
     products.forEach(el => {
-      
+
       if (el.id == id) {
         res.json({
           id: el.id,
@@ -63,7 +63,7 @@ const getProductById = async (req, res) => {
           category: el.category.name,
           brand: el.brand.name,
           creator: el.creator
-          
+
         })
       }
     })
@@ -74,7 +74,7 @@ const getProductById = async (req, res) => {
 
 const getFilteredProducts = async (req, res) => {
 
-  const { category, brand } = req.query;
+  const { category, brand, name } = req.query;
   let { min_price, max_price } = req.query;
 
   let sqlQuery =
@@ -84,26 +84,15 @@ const getFilteredProducts = async (req, res) => {
   JOIN brand AS b ON p."brandId" = b.id
   WHERE p.price <> -1`;
 
-  if (category) {
-    // sqlQuery = insertIntoString(sqlQuery, ', c.name AS category', 'FROM');
-    // sqlQuery = insertIntoString(sqlQuery, 'JOIN categories AS c ON p."categoryId" = c.id', 'WHERE');
-    sqlQuery += ` AND c.id = ${category}`;
-  }
+  if (category) sqlQuery += ` AND c.id = ${category}`;
 
-  if (brand) {
-    // sqlQuery = insertIntoString(sqlQuery, ', b.name AS brand', 'FROM');
-    // sqlQuery = insertIntoString(sqlQuery, 'JOIN brand AS b ON p."brandId" = b.id', 'WHERE');
-    sqlQuery += ` AND b.id = ${brand}`;
-  }
+  if (brand) sqlQuery += ` AND b.id = ${brand}`;
+
+  if (name) sqlQuery += ` AND p.title ILIKE '%${name}%'`;
 
   if (min_price || max_price) {
-    if (!min_price) {
-      min_price = 0
-    };
-    if (!max_price) {
-      max_price = 100000000
-    };
-
+    if (!min_price) min_price = 0
+    if (!max_price) max_price = 100000000;
     sqlQuery += ` AND p.price BETWEEN ${min_price} AND ${max_price}`;
   }
 
@@ -144,7 +133,7 @@ const postProducts = async (req, res) => {
     },
     )
     res.send('Product created successfully')
-    
+
   } catch (error) {
     res.status(404).json({ "error": error.message })
   }
@@ -153,7 +142,7 @@ const postProducts = async (req, res) => {
 const putProducts = async (req, res) => {
   const { id } = req.params;
   const { name, brand, stock, price, description, img, category } = req.body;
-console.log(req.body)
+
   try {
     const findBrand = await Brand.findOne({
       where: {

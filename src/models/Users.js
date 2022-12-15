@@ -4,27 +4,22 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('users', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUID,
-      primaryKey: true
+      type: DataTypes.SMALLINT,
+      primaryKey: true,
+      autoIncrement: true
     },
     username: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
-      unique: true,
-      validate: {
+      type: DataTypes.STRING(30),
+      //allowNull: false,
+    /*   validate: {
         notNull: {
           msg: `Username can't be empty`
         },
         len: {
-          args: [3, 20],
-          msg: 'Username must have 3 to 20 characters'
+          args: [3, 30],
+          msg: 'Username must have 3 to 30 characters'
         }
-      }
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      } */
     },
     email: {
       type: DataTypes.STRING(100),
@@ -39,11 +34,9 @@ module.exports = (sequelize) => {
         },
       }
     },
-    category: {
-      type: DataTypes.ENUM('buyer', 'seller')
-    },
     status: {
-      type: DataTypes.ENUM('active', 'inactive', 'banned', 'deleted')
+      type: DataTypes.ENUM('active', 'inactive', 'banned', 'deleted'),
+      defaultValue: "active",
     },
     isAdmin: {
       type: DataTypes.BOOLEAN,

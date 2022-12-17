@@ -31,7 +31,7 @@ router.post('/api/checkout', async (req, res) =>{
     payment_method_types:["card"],
     line_items: listProduct,
     mode: 'payment',
-    success_url: `http://localhost:5173`,
+    success_url: `http://localhost:5173/success`,
     cancel_url: `http://localhost:5173/cart`,
     });
   

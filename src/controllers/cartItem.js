@@ -1,20 +1,23 @@
 const { Product, CartItem } = require('../db');
+import {getProductById} from "../controllers/product"
+
 
 const postCartItem = async (req, res) => {
-  const { name } = req.body;
+  const { title, quantity } = req.body;
   try {
     const findProduct = await Product.findOne({
       where: {
-        title: name,
+        title: title,
       }
     });
     await CartItem.create({
-      productId: findProduct.dataValues.id
+      productId: findProduct.dataValues.id,
+      quantity
     });
     res.send('CartItem created successfully')
   }
   catch (error) {
-    res.status(404).json(error.message);
+   console.log(error.message);
   }
 };
 

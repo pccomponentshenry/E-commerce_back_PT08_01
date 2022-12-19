@@ -1,17 +1,35 @@
-const { Product, CartItem } = require('../db');
-import {getProductById} from "../controllers/product"
+const { Product, CartItem, Users } = require('../db');
+//import {getProductById} from "../controllers/product"
 
+const getCartItem = async (req, res) =>{
+  const dbData = await CartItem.findAll({
+    include: {
+      model: Product,  //para que pueda hacer la relacion
+      //attribute: ["name"],    
+      through: {
+        attributes: [],
+      },
+    },
+  });
+}
 
 const postCartItem = async (req, res) => {
-  const { title, quantity } = req.body;
+  const { title, quantity, email } = req.body;
+  console.log(req.body)
   try {
     const findProduct = await Product.findOne({
       where: {
         title: title,
       }
     });
+    const findUser = await Users.findOne({
+      where:{
+        email: email
+      }
+    })
     await CartItem.create({
       productId: findProduct.dataValues.id,
+      userId: findUser.dataValues.id,
       quantity
     });
     res.send('CartItem created successfully')
@@ -37,4 +55,4 @@ const modifyCartItem = async (req, res) => {
   }
 }
 
-module.exports = { postCartItem, modifyCartItem };
+module.exports = { postCartItem, modifyCartItem, getCartItem };

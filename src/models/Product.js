@@ -31,7 +31,11 @@ module.exports = (sequelize) => {
     stock: {
       type: DataTypes.INTEGER,
       allowNull: false,
-    }
+    },
+    status: {
+      type: DataTypes.ENUM('active', 'inactive', 'banned'),
+      defaultValue: "active",
+    },
   }, {
     timestamps: false
   });

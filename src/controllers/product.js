@@ -62,7 +62,8 @@ const getProductById = async (req, res) => {
           stock: el.stock,
           category: el.category.name,
           brand: el.brand.name,
-          creator: el.creator
+          creator: el.creator,
+          status: el.status
 
         })
       }

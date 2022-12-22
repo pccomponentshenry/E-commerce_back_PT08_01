@@ -171,5 +171,19 @@ const putProducts = async (req, res) => {
     res.status(400).send(error.message)
   }
 }
+const deleteProduct = async (req, res)=>{
+  let {id} = req.params;
+  
+  
+  let forDelete = await Product.findByPk(id)
+  if (id && forDelete){
+      await forDelete.update({
+          status: 'inactive'
+          }); 
+      res.send("se elimino con exito")
+  }else {
+      res.status(400).json({error: "No se recibieron los parámetros necesarios para borrar el Post"})
+  }
+};
 
-module.exports = { populateProducts, getAllProducts, getProductById, getFilteredProducts, postProducts, putProducts };
+module.exports = { populateProducts, getAllProducts, getProductById, getFilteredProducts, postProducts, putProducts, deleteProduct };

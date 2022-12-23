@@ -1,41 +1,100 @@
-const { Product, CartItem, Users } = require('../db');
-//import {getProductById} from "../controllers/product"
+const { Product, CartItem, Users, conn } = require('../db');
 
-const getCartItem = async (req, res) =>{
-  const dbData = await CartItem.findAll({
-    include: {
-      model: Product,  //para que pueda hacer la relacion
-      //attribute: ["name"],    
-      through: {
-        attributes: [],
+const getCartItem = async (req, res) => {
+  const { email } = req.params;
+
+  const sqlQuery =
+    `SELECT p.id, p.title, p.img, p.price, p.description, p.stock, c.name AS category, b.name AS brand, ci.quantity
+    FROM products AS p 
+    JOIN "cartItems" AS ci ON p.id = ci."productId" 
+    JOIN users AS u ON u.id = ci."userId" 
+    JOIN categories AS c ON p."categoryId" = c.id 
+    JOIN brand AS b ON b.id = p."brandId"
+    WHERE u.email = '${email}'`;
+
+  try {
+    const products = await conn.query(sqlQuery,
+      {
+        model: Product,
+        mapToModel: true
       },
-    },
-  });
+      {
+        raw: true
+      });
+    res.status(200).send(products);
+  }
+  catch (error) {
+    res.status(400).send(error);
+  }
+}
+
+const removeAllFromCart = async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const user = await Users.findOne({ where: { email: `${email}` } });
+
+    await CartItem.destroy({
+      where: {
+        userId: user.dataValues.id
+      }
+    })
+    res.status(200).send(`Cart succesfully deleted for user ${id}`);
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
 }
 
 const postCartItem = async (req, res) => {
-  const { title, quantity, email } = req.body;
-  console.log(req.body)
+  const { id, quantity, email, add } = req.body;
+
   try {
-    const findProduct = await Product.findOne({
+    const product = await Product.findByPk(id);
+    const user = await Users.findOne({
       where: {
-        title: title,
-      }
-    });
-    const findUser = await Users.findOne({
-      where:{
         email: email
       }
-    })
-    await CartItem.create({
-      productId: findProduct.dataValues.id,
-      userId: findUser.dataValues.id,
-      quantity
     });
+    const cartItem = await CartItem.findOne({
+      where: {
+        userId: user.dataValues.id,
+        productId: product.dataValues.id
+      },
+      raw: true
+    });
+
+    if (cartItem) {
+      const quant = add ? cartItem.quantity + quantity : cartItem.quantity - quantity;
+
+      if (quant) {
+        await CartItem.update({ quantity: quant }, {
+          where: {
+            productId: product.dataValues.id,
+            userId: user.dataValues.id
+          }
+        });
+      }
+      else {
+        await CartItem.destroy({
+          where: {
+            userId: user.dataValues.id,
+            productId: product.dataValues.id
+          }
+        })
+      }
+    }
+    else {
+      await CartItem.create({
+        productId: product.dataValues.id,
+        userId: user.dataValues.id,
+        quantity
+      });
+    }
+
     res.send('CartItem created successfully')
   }
   catch (error) {
-   console.log(error.message);
+    console.log(error.message);
   }
 };
 
@@ -55,4 +114,4 @@ const modifyCartItem = async (req, res) => {
   }
 }
 
-module.exports = { postCartItem, modifyCartItem, getCartItem };
+module.exports = { postCartItem, removeAllFromCart, getCartItem };

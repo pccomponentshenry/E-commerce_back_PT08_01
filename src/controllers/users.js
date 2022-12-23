@@ -19,17 +19,22 @@ const postUser = async (req, res) => {
         name: location,
       }
     }) */
-    await Users.create({
-      username,
-      email,
-      status,
-      isAdmin,
-      //LocationId: findLocation.dataValues.id
-    },
-    )
+
+    await Users.findOrCreate({
+      where: {
+        email
+      },
+      defaults: {
+        username
+        //locationId: findLocation.dataValues.id
+      }
+    });
+
     res.send('User created successfully')
 
   } catch (error) {
+    //console.log('error', error);
+
     res.status(404).json(error.message)
   }
 };

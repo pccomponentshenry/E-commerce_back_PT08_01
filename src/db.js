@@ -54,14 +54,14 @@ Product.belongsTo(Category);
 Brand.hasMany(Product);
 Product.belongsTo(Brand);
 
-Users.belongsToMany(Product, { through: "Users-Product" });
-Product.belongsToMany(Users, { through: "Users-Product" });
+Users.hasMany(Product);
+Product.belongsTo(Users);
 
 Cart.hasMany(Users);
 Users.belongsTo(Cart);
 
-Cart.hasMany(CartItem);
-CartItem.belongsTo(Cart);
+// Cart.hasMany(CartItem);
+// CartItem.belongsTo(Cart);
 
 Product.hasMany(CartItem);
 CartItem.belongsTo(Product);

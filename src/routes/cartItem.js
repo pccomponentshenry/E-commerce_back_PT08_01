@@ -1,9 +1,9 @@
 const { Router } = require("express");
-const { postCartItem, modifyCartItem } = require("../controllers/cartItem");
+const { postCartItem, modifyCartItem, getCartItem, removeAllFromCart } = require("../controllers/cartItem");
 const router = Router();
-const { Product, CartItem } = require('../db')
 
+router.get("/:email", getCartItem);
 router.post("/", postCartItem);
-router.put("/:id", modifyCartItem);
+router.put("/:email", removeAllFromCart);
 
 module.exports = router;

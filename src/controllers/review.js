@@ -1,9 +1,16 @@
 const { Productreview } = require("../db");
+const { Product} = require('../db');
 
 const getReviews = async (req, res) => {
     try {
       const allReviews = await Productreview.findAll({
-        raw: true
+        raw: true,
+        include:[
+          {
+            model:Product,
+            attributes:['id']
+          }
+        ]
       });
       res.status(200).json(allReviews);
     } catch (error) {
@@ -12,12 +19,18 @@ const getReviews = async (req, res) => {
 };
 
 const postReview = async (req, res) => {
-    const { title, message, score} = req.body;
+    const { title, message, score,id} = req.body;
     try {
+      const findProduct = await Product.findOne({
+        where: {
+          id: id
+        }
+      })
       await Productreview.create({
         title,
         message,
         score,
+        productId: findProduct.id
       },
       )
       res.send('Review created successfully')

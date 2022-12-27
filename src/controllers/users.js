@@ -1,5 +1,10 @@
 const { Users, Location } = require("../db");
 
+const populateUser = async () => {
+  const user = { username: "pccomponentshenry", email: "pccomponentshenry@gmail.com" }
+  await Users.create(user)
+}
+
 const getUsers = async (req, res) => {
   try {
     const allUsers = await Users.findAll({
@@ -39,4 +44,4 @@ const postUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, postUser }
+module.exports = { populateUser, getUsers, postUser }

@@ -16,6 +16,7 @@ const populateProducts = async () => {
         stock: Math.floor(Math.random() * 500),
         categoryId: category?.dataValues?.id,
         brandId: brand?.dataValues?.id,
+        userId: 1
       });
   }
 };

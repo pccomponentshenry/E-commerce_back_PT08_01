@@ -1,4 +1,5 @@
 const { Users, Location } = require("../db");
+const axios =require ("axios");
 
 const populateUser = async () => {
   const user = { username: "pccomponentshenry", email: "pccomponentshenry@gmail.com" }
@@ -14,7 +15,7 @@ const getUsers = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: "No se encontraron Usuarios" });
   }
-};
+}; 
 
 const postUser = async (req, res) => {
   const { username, email, status, isAdmin, location } = req.body;
@@ -34,11 +35,11 @@ const postUser = async (req, res) => {
         //locationId: findLocation.dataValues.id
       }
     });
-
+    axios.post(`${process.env.BACK_URL}/email/register`,{email:email, name:username})
     res.send('User created successfully')
 
   } catch (error) {
-    //console.log('error', error);
+    console.log('error', error.message);
 
     res.status(404).json(error.message)
   }

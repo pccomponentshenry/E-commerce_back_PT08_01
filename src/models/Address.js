@@ -25,6 +25,10 @@ module.exports = (sequelize) => {
     },
     additionalDetails: {
       type: DataTypes.STRING(100)
+    },
+    isDefault: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   }, {
     timestamps: false

@@ -71,7 +71,7 @@ Address.belongsTo(Location);
 
 Users.hasMany(Order, { as: 'seller', foreignKey: 'sellerId' });
 Address.hasMany(Order);
-Order.belongsTo(Users);
+Order.belongsTo(Users, { as: 'buyer', foreignKey: 'buyerId' });
 Order.belongsTo(Address);
 
 Product.hasMany(OrderItem);

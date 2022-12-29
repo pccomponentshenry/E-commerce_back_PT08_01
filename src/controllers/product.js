@@ -1,5 +1,5 @@
 const { conn } = require("../db");
-const { Product, Category, Brand } = require("../db");
+const { Product, Category, Brand, Users } = require("../db");
 const { insertIntoString } = require("../utils");
 const jsonProducts = require("../json/all.json");
 
@@ -16,7 +16,7 @@ const populateProducts = async () => {
         stock: Math.floor(Math.random() * 500),
         categoryId: category?.dataValues?.id,
         brandId: brand?.dataValues?.id,
-        userId: 1
+        userId: 1,
       });
   }
 };
@@ -32,6 +32,7 @@ const allProductsDB = async () => {
         model: Brand,
         attributes: ["name"],
       },
+      { model: Users, attributes: ["email"] },
     ],
   });
 };

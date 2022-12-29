@@ -1,5 +1,9 @@
 const { Router } = require("express");
-const { getAddresses, postAddress, modifyAddress } = require("../controllers/address");
+const {
+  getAddresses,
+  postAddress,
+  modifyAddress,
+} = require("../controllers/address");
 
 const router = Router();
 

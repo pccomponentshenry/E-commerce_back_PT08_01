@@ -27,7 +27,7 @@ router.use("/categories", category);
 router.use("/locations", location);
 router.use("/products", product);
 router.use("/users", users);
-router.use(payment);
+router.use("/order", payment);
 router.use("/email", email)
 router.use("/review", review);
 router.use("/address", address);

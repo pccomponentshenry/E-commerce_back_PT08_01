@@ -69,20 +69,15 @@ Address.belongsTo(Users);
 Location.hasMany(Address);
 Address.belongsTo(Location);
 
-Users.hasMany(Order, { as: 'seller', foreignKey: 'sellerId' });
+Users.hasMany(Order);
+Order.belongsTo(Users);
 Address.hasMany(Order);
-Order.belongsTo(Users, { as: 'buyer', foreignKey: 'buyerId' });
 Order.belongsTo(Address);
 
 Product.hasMany(OrderItem);
 OrderItem.belongsTo(Product);
 Order.hasMany(OrderItem);
 OrderItem.belongsTo(Order);
-
-// Cart.hasMany(Users);
-// Users.belongsTo(Cart);
-// Cart.hasMany(CartItem);
-// CartItem.belongsTo(Cart);
 
 Users.hasMany(Userreview);
 Userreview.belongsTo(Users);

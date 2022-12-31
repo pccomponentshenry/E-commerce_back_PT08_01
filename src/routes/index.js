@@ -11,7 +11,7 @@ const product = require("./product.js");
 const users = require("./users.js");
 const populate = require("./populate.js");
 const email = require("./email.js")
-const payment = require("./payment.js")
+const order = require("./order.js")
 const review = require("./review");
 const address = require("./address");
 
@@ -27,7 +27,7 @@ router.use("/categories", category);
 router.use("/locations", location);
 router.use("/products", product);
 router.use("/users", users);
-router.use("/order", payment);
+router.use("/order", order);
 router.use("/email", email)
 router.use("/review", review);
 router.use("/address", address);

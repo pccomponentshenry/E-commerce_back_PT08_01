@@ -10,7 +10,7 @@ module.exports = (sequelize) => {
     },
     purchaseDate: {
       type: DataTypes.DATE,
-      allowNull: false
+      defaultValue: DataTypes.NOW
     },
     status: {
       type: DataTypes.ENUM('created', 'processing', 'cancelled', 'completed'),

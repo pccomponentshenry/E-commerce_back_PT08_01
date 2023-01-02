@@ -5,14 +5,7 @@ const getAddresses = async (req, res) => {
 
   try {
     const addresses = await Address.findAll({
-      attributes: [
-        "id",
-        "streetName",
-        "streetNumber",
-        "apartment",
-        "zipCode",
-        "additionalDetails",
-        "isDefault",
+      attributes: ["id", "streetName", "streetNumber", "apartment", "zipCode", "additionalDetails", "isDefault",
       ],
       where: {
         userId,
@@ -25,21 +18,14 @@ const getAddresses = async (req, res) => {
     });
 
     res.status(200).send(addresses);
-  } catch (error) {
+  }
+  catch (error) {
     res.status(400).send(error);
   }
 };
 
 const postAddress = async (req, res) => {
-  const {
-    userId,
-    streetName,
-    streetNumber,
-    apartment,
-    zipCode,
-    additionalDetails,
-    locationId,
-  } = req.body;
+  const { userId, streetName, streetNumber, apartment, zipCode, additionalDetails, locationId, } = req.body;
   let isDefault;
 
   try {
@@ -65,23 +51,36 @@ const postAddress = async (req, res) => {
       return res.status(200).send(created);
     }
     res.status(400).send("Address already exists");
-  } catch (error) {
+  }
+  catch (error) {
     res.status(400).send(error);
   }
 };
 
 const modifyAddress = async (req, res) => {
-  const {
-    id,
-    streetName,
-    streetNumber,
-    apartment,
-    zipCode,
-    additionalDetails,
-    locationId,
-  } = req.body;
+  const { id, streetName, streetNumber, apartment, zipCode, additionalDetails, locationId, isDefault } = req.body;
 
   try {
+    if (isDefault) {
+      await Address.update(
+        {
+          isDefault: false
+        },
+        {
+          where: {
+            isDefault: true
+          }
+        });
+      await Address.update(
+        {
+          isDefault: true
+        },
+        {
+          where: { id }
+        });
+      return res.status(200).send("Address successfully modified");
+    }
+
     await Address.update(
       {
         streetName,
@@ -94,7 +93,8 @@ const modifyAddress = async (req, res) => {
       { where: { id } }
     );
     res.status(200).send("Address successfully modified");
-  } catch (error) {
+  }
+  catch (error) {
     res.status(400).send(error);
   }
 };
@@ -104,15 +104,7 @@ const getAddressById = async (req, res) => {
 
   try {
     const addresses = await Address.findAll({
-      attributes: [
-        "id",
-        "streetName",
-        "streetNumber",
-        "apartment",
-        "zipCode",
-        "additionalDetails",
-        "isDefault",
-      ],
+      attributes: ["id", "streetName", "streetNumber", "apartment", "zipCode", "additionalDetails", "isDefault"],
       where: {
         userId,
       },
@@ -136,9 +128,25 @@ const getAddressById = async (req, res) => {
         });
       }
     });
-  } catch (error) {
+  }
+  catch (error) {
     res.status(404).send(error);
   }
 };
 
-module.exports = { getAddresses, postAddress, modifyAddress, getAddressById };
+const deleteAddress = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await Address.destroy({
+      where: {
+        id
+      }
+    });
+    res.status(200).send("Address deleted successfully");
+  }
+  catch (error) {
+    res.status(400).send(error);
+  }
+}
+
+module.exports = { getAddresses, postAddress, modifyAddress, getAddressById, deleteAddress };

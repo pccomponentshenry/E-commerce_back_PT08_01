@@ -39,7 +39,7 @@ const removeAllFromCart = async (req, res) => {
         userId: user.dataValues.id
       }
     })
-    res.status(200).send(`Cart succesfully deleted for user ${email}`);
+    res.status(200).send(`Cart successfully deleted for user ${email}`);
   }
   catch (error) {
     res.status(400).send(error.message);

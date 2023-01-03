@@ -34,7 +34,7 @@ const handlePayment = async (req, res) => {
       success_url: "http://localhost:5173/success",
       cancel_url: `http://localhost:5173/order`,
     });
-  
+
     res.status(200).send({ id: session.id });
   }
   catch (error) {
@@ -68,7 +68,7 @@ const createOrderItem = async (req, res) => {
 
 const changeOrderStatus = async (req, res) => {
   const { userId, status } = req.body;
- 
+
   try {
     await Order.update({ status },
       {
@@ -78,12 +78,15 @@ const changeOrderStatus = async (req, res) => {
         }
       }
     );
-    const user = await Users.findOne({ where: { id: userId } });
-       axios.post(`${process.env.BACK_URL}/email/`, {
-      email: user.dataValues.email,
-      name: user.dataValues.username,
-    }); 
-    
+
+    if (status === "completed") {
+      const user = await Users.findByPk(userId);
+      axios.post(`${process.env.BACK_URL}/email/`, {
+        email: user.dataValues.email,
+        name: user.dataValues.username,
+      });
+    }
+
     res.status(200).send(`Order successfully ${status}`);
   }
   catch (error) {

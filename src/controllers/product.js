@@ -1,6 +1,5 @@
 const { conn } = require("../db");
-const { Product, Category, Brand, Users } = require("../db");
-const { insertIntoString } = require("../utils");
+const { Product, Category, Brand, Users, Order, OrderItem } = require("../db");
 const jsonProducts = require("../json/all.json");
 
 const populateProducts = async () => {
@@ -182,19 +181,73 @@ const putProducts = async (req, res) => {
     res.status(400).send(error.message);
   }
 };
+
 const deleteProduct = async (req, res) => {
   let { id } = req.params;
 
   let forDelete = await Product.findByPk(id);
   if (id && forDelete) {
-    await forDelete.update({
-      status: "inactive",
-    });
-    res.send("se elimino con exito");
+    try {
+      await forDelete.update({
+        status: "inactive",
+      });
+      res.status(200).send("Product deleted successfully");
+    } catch (error) {
+      res.status(400).send(error);
+    }
+
   } else {
     res.status(400).json({
-      error: "No se recibieron los parámetros necesarios para borrar el Post",
+      error: "No se recibieron los parámetros necesarios para borrar el producto",
     });
+  }
+};
+
+const updateProductStock = async (req, res) => {
+  const { userId } = req.params;
+  console.log('userId', userId);
+
+  try {
+    const order = await Order.findOne({
+      where: {
+        userId,
+        status: "created"
+      },
+      raw: true
+    });
+
+    const orderItems = await OrderItem.findAll({
+      where: {
+        orderId: order.id
+      },
+      raw: true
+    });
+
+    for (let i = 0; i < orderItems.length; i++) {
+      const id = orderItems[i].productId;
+      const product = await Product.findByPk(id, { raw: true });
+      const newStock = product.stock - orderItems[i].quantity > 0
+        ? product.stock - orderItems[i].quantity
+        : 0;
+
+      const whereParams = { id };
+
+      if (!newStock) {
+        whereParams.status = "inactive";
+      }
+
+      await Product.update(
+        {
+          stock: newStock
+        },
+        {
+          where: whereParams
+        }
+      );
+    }
+    res.status(200).send("Stock updated");
+  } catch (error) {
+    res.status(400).send(error);
   }
 };
 
@@ -206,4 +259,5 @@ module.exports = {
   postProducts,
   putProducts,
   deleteProduct,
+  updateProductStock
 };

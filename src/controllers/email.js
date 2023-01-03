@@ -37,12 +37,12 @@ const sendEmailRegister = async (req, res) => {
 
 
 const sendEmail = async (req, res) => {
-  const { email, name, cart, value } = req.body;
+  const { email, name} = req.body;
 
-  const filePath = path.join(__dirname, '../utils/register.html');
+  const filePath = path.join(__dirname, '../utils/purchase.html');
   const source = fs.readFileSync(filePath, 'utf-8').toString();
   const template = handlebars.compile(source);
-  const replacements = { user: name, value };
+  const replacements = { user: name };
   const htmlToSend = template(replacements);
 
   try {

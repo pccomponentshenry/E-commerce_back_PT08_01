@@ -183,33 +183,43 @@ const postProducts = async (req, res) => {
 const putProducts = async (req, res) => {
   const { id } = req.params;
   const { name, brand, stock, price, description, img, category } = req.body;
+  console.log(req.body)
 
   try {
+
+    const updateParams = {};
+
+    for (item in req.body) {
+      console.log('req.body[item]', req.body[item]);
+
+      if (req.body[item] && req.body[item]?.length) {
+        updateParams[item] = req.body[item];
+      }
+    }
     const findBrand = await Brand.findOne({
       where: {
         name: brand,
       },
     });
+
     const findCategory = await Category.findOne({
       where: {
         name: category,
       },
     });
 
-    let forUpdate = await Product.findByPk(id);
-    await forUpdate.update({
-      title: name,
-      stock,
-      price,
-      description,
-      img,
-      categoryId: findCategory.dataValues.id,
-      brandId: findBrand.dataValues.id,
-    });
+    if (findBrand) {
+      updateParams.brandId = findBrand.dataValues.id;
+    }
+    if (findCategory) {
+      updateParams.categoryId = findCategory.dataValues.id;
+    }
+
+    const forUpdate = await Product.findByPk(id);
+    await forUpdate.update(updateParams);
+
     res.status(200).send("Product updated successfully");
   } catch (error) {
-    console.log('error', error);
-
     res.status(400).send(error.message);
   }
 };

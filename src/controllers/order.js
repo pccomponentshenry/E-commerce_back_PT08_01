@@ -1,12 +1,14 @@
 const Stripe = require("stripe");
 require('dotenv').config();
 const { DB_PAYMENT } = process.env;
-const { Order, OrderItem, Product } = require('../db');
+const { Order, OrderItem, Product, Users } = require('../db');
+const axios = require("axios");
 
 const stripe = new Stripe(DB_PAYMENT);
 
 const handlePayment = async (req, res) => {
   const products = req.body.products;
+
 
   const listProduct = [];
 
@@ -76,6 +78,14 @@ const changeOrderStatus = async (req, res) => {
         }
       }
     );
+
+    if (status === "completed") {
+      const user = await Users.findByPk(userId);
+      axios.post(`${process.env.BACK_URL}/email/`, {
+        email: user.dataValues.email,
+        name: user.dataValues.username,
+      });
+    }
 
     res.status(200).send(`Order successfully ${status}`);
   }

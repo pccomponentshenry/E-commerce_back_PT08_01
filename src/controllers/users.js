@@ -51,7 +51,7 @@ const postUser = async (req, res) => {
       }
     }) */
 
-    await Users.findOrCreate({
+    const user = await Users.findOrCreate({
       where: {
         email,
       },
@@ -59,15 +59,21 @@ const postUser = async (req, res) => {
         username,
         //locationId: findLocation.dataValues.id
       },
+      raw: true
     });
-    axios.post(`${process.env.BACK_URL}/email/register`, {
-      email: email,
-      name: username,
-    });
-    res.send("User created successfully");
-  } catch (error) {
-    console.log("error", error.message);
 
+    const userRegistered = user[1];
+    if (userRegistered) {
+      axios.post(`${process.env.BACK_URL}/email/register`, {
+        email: email,
+        name: username,
+      });
+    }
+
+    res.send("User created successfully");
+
+  }
+  catch (error) {
     res.status(404).json(error.message);
   }
 };

@@ -2,6 +2,7 @@ const { populateBrands } = require("./brand");
 const { populateCategories } = require("./category");
 const { populateLocations } = require("./location");
 const { populateProducts } = require("./product");
+const { populateUser } = require("./users");
 const { Product } = require('../db');
 
 const populateDB = async (req, res) => {
@@ -11,6 +12,7 @@ const populateDB = async (req, res) => {
       await populateBrands();
       await populateCategories();
       await populateLocations();
+      await populateUser();
       await populateProducts();
       return res.status(200).send("Database populated");
     }

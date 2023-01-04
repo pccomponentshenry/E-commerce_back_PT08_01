@@ -10,7 +10,10 @@ const location = require("./location.js");
 const product = require("./product.js");
 const users = require("./users.js");
 const populate = require("./populate.js");
-const payment = require ("./payment.js")
+const email = require("./email.js")
+const order = require("./order.js")
+const review = require("./review");
+const address = require("./address");
 
 const router = Router();
 
@@ -24,7 +27,10 @@ router.use("/categories", category);
 router.use("/locations", location);
 router.use("/products", product);
 router.use("/users", users);
-router.use(payment);
+router.use("/order", order);
+router.use("/email", email)
+router.use("/review", review);
+router.use("/address", address);
 
 router.use("/populateDB", populate);
 module.exports = router;

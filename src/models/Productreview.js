@@ -18,7 +18,15 @@ module.exports = (sequelize) => {
         score: {
             type: DataTypes.INTEGER,
             allowNull: false,
-        }
+        },
+        picprofile: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        username: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     },{
         timestamps: false
       });

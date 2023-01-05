@@ -182,20 +182,18 @@ const postProducts = async (req, res) => {
 
 const putProducts = async (req, res) => {
   const { id } = req.params;
-  const { name, brand, stock, price, description, img, category } = req.body;
-  console.log(req.body)
+  const { brand, category } = req.body;
 
   try {
 
     const updateParams = {};
 
     for (item in req.body) {
-      console.log('req.body[item]', req.body[item]);
-
       if (req.body[item] && req.body[item]?.length) {
         updateParams[item] = req.body[item];
       }
     }
+
     const findBrand = await Brand.findOne({
       where: {
         name: brand,
@@ -247,7 +245,6 @@ const deleteProduct = async (req, res) => {
 
 const updateProductStock = async (req, res) => {
   const { userId } = req.params;
-  console.log('userId', userId);
 
   try {
     const order = await Order.findOne({

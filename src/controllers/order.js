@@ -1,7 +1,7 @@
 const Stripe = require("stripe");
 require('dotenv').config();
 const { DB_PAYMENT } = process.env;
-const { Order, OrderItem, Product, Users } = require('../db');
+const { Order, OrderItem, Product, Users, conn } = require('../db');
 const axios = require("axios");
 
 const stripe = new Stripe(DB_PAYMENT);
@@ -113,5 +113,27 @@ const getOrders = async (req, res) => {
   }
 }
 
+const getSoldProducts = async (req, res) => {
 
-module.exports = { handlePayment, createOrder, createOrderItem, changeOrderStatus, getOrders };
+  try {
+    let sqlQuery = `SELECT p.id, p.title, p.img, SUM(oi.quantity) AS total 
+    FROM "orderItems" AS oi 
+    JOIN products AS p ON p.id = oi."productId" 
+    JOIN orders AS o ON o.id = oi."orderId" 
+    WHERE o.status = 'completed' 
+    GROUP BY p.id, p.title, oi."productId";`;
+
+    const sales = await conn.query(sqlQuery, {
+      mapToModel: true,
+      model: OrderItem,
+    });
+
+    res.status(200).send(sales);
+  }
+  catch (error) {
+    res.status(400).send(error);
+  }
+}
+
+
+module.exports = { handlePayment, createOrder, createOrderItem, changeOrderStatus, getOrders, getSoldProducts };

@@ -121,7 +121,8 @@ const getSoldProducts = async (req, res) => {
     JOIN products AS p ON p.id = oi."productId" 
     JOIN orders AS o ON o.id = oi."orderId" 
     WHERE o.status = 'completed' 
-    GROUP BY p.id, p.title, oi."productId";`;
+    GROUP BY p.id, p.title, oi."productId"
+    ORDER BY total DESC;`;
 
     const sales = await conn.query(sqlQuery, {
       mapToModel: true,

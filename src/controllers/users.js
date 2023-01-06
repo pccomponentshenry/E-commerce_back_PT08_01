@@ -43,23 +43,17 @@ const getUserById = async (req, res) => {
 };
 
 const postUser = async (req, res) => {
-  const { username, email, status, isAdmin, location } = req.body;
+  const { username, email } = req.body;
+
   try {
-    /* const findLocation = await Location.findOne({
-      where: {
-        name: location,
-      }
-    }) */
 
     const user = await Users.findOrCreate({
       where: {
         email,
       },
       defaults: {
-        username,
-        //locationId: findLocation.dataValues.id
-      },
-      raw: true
+        username
+      }
     });
 
     const userRegistered = user[1];
@@ -68,10 +62,9 @@ const postUser = async (req, res) => {
         email: email,
         name: username,
       });
-    }
+    };
 
-    res.send("User created successfully");
-
+    res.send(user[0]);
   }
   catch (error) {
     res.status(404).json(error.message);

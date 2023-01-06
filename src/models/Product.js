@@ -9,10 +9,6 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
-    creator: {
-      type: DataTypes.STRING,
-      defaultValue: "admin"
-    },
     title: {
       type: DataTypes.STRING,
       allowNull: false,

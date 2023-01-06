@@ -19,7 +19,7 @@ const getReviews = async (req, res) => {
 };
 
 const postReview = async (req, res) => {
-    const { title, message, score,id} = req.body;
+    const { title, message, score, id, picprofile, username} = req.body;
     try {
       const findProduct = await Product.findOne({
         where: {
@@ -30,6 +30,8 @@ const postReview = async (req, res) => {
         title,
         message,
         score,
+        picprofile,
+        username,
         productId: findProduct.id
       },
       )

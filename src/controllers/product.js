@@ -77,7 +77,7 @@ const getProductById = async (req, res) => {
           stock: el.stock,
           category: el.category.name,
           brand: el.brand.name,
-          creator: el.creator,
+          user: el.userId,
           status: el.status,
         });
       }
@@ -86,6 +86,32 @@ const getProductById = async (req, res) => {
     res.status(404).send(error);
   }
 };
+
+const getProductsByUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const products = await Product.findAll(
+      {
+        where: {
+          userId: id
+        },
+        include: [
+          {
+            model: Category,
+            attributes: ["name"],
+          },
+          {
+            model: Brand,
+            attributes: ["name"],
+          }
+        ],
+      });
+    res.status(200).send(products);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+}
 
 const getFilteredProducts = async (req, res) => {
   const { category, brand, name } = req.query;
@@ -121,62 +147,76 @@ const getFilteredProducts = async (req, res) => {
 };
 
 const postProducts = async (req, res) => {
-  const { name, brand, stock, price, description, img, category, creator } =
-    req.body;
+  const { title, brand, stock, price, description, img, category, userId } = req.body;
+
   try {
     const findBrand = await Brand.findOne({
       where: {
         name: brand,
       },
     });
+
     const findCategory = await Category.findOne({
       where: {
         name: category,
       },
     });
-    await Product.create({
-      title: name,
+
+    const product = await Product.create({
+      title,
       img,
       price,
       description,
       stock,
       categoryId: findCategory.dataValues.id,
       brandId: findBrand.dataValues.id,
-      creator,
+      userId,
     });
-    res.send("Product created successfully");
+
+    res.send(product);
   } catch (error) {
+    console.log(error)
     res.status(404).json({ error: error.message });
   }
 };
 
 const putProducts = async (req, res) => {
   const { id } = req.params;
-  const { name, brand, stock, price, description, img, category } = req.body;
+  const { brand, category } = req.body;
 
   try {
+
+    const updateParams = {};
+
+    for (item in req.body) {
+      if (req.body[item] && req.body[item]?.length) {
+        updateParams[item] = req.body[item];
+      }
+    }
+
     const findBrand = await Brand.findOne({
       where: {
         name: brand,
       },
     });
+
     const findCategory = await Category.findOne({
       where: {
         name: category,
       },
     });
 
-    let forUpdate = await Product.findByPk(id);
-    await forUpdate.update({
-      title: name,
-      stock,
-      price,
-      description,
-      img,
-      categoryId: findCategory.dataValues.id,
-      brandId: findBrand.dataValues.id,
-    });
-    res.status(200).send("Product update successfully");
+    if (findBrand) {
+      updateParams.brandId = findBrand.dataValues.id;
+    }
+    if (findCategory) {
+      updateParams.categoryId = findCategory.dataValues.id;
+    }
+
+    const forUpdate = await Product.findByPk(id);
+    await forUpdate.update(updateParams);
+
+    res.status(200).send("Product updated successfully");
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -205,7 +245,6 @@ const deleteProduct = async (req, res) => {
 
 const updateProductStock = async (req, res) => {
   const { userId } = req.params;
-  console.log('userId', userId);
 
   try {
     const order = await Order.findOne({
@@ -259,5 +298,6 @@ module.exports = {
   postProducts,
   putProducts,
   deleteProduct,
-  updateProductStock
+  updateProductStock,
+  getProductsByUser
 };

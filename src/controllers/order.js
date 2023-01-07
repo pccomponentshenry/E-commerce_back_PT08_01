@@ -5,10 +5,10 @@ const { Order, OrderItem, Product, Users, conn } = require('../db');
 const axios = require("axios");
 
 const stripe = new Stripe(DB_PAYMENT);
+const URL = "http://localhost:5173";
 
 const handlePayment = async (req, res) => {
   const products = req.body.products;
-
 
   const listProduct = [];
 
@@ -31,8 +31,8 @@ const handlePayment = async (req, res) => {
       payment_method_types: ["card"],
       line_items: listProduct,
       mode: 'payment',
-      success_url: "http://localhost:5173/success",
-      cancel_url: `http://localhost:5173/order`,
+      success_url: `${URL}/success`,
+      cancel_url: `${URL}/order`
     });
 
     res.status(200).send({ id: session.id });
@@ -113,8 +113,8 @@ const getOrders = async (req, res) => {
   }
 }
 const getAllOrders = async (req, res) => {
-  const allOrder =  await Order.findAll({
-    include:[{
+  const allOrder = await Order.findAll({
+    include: [{
       model: OrderItem,
       include: Product
     }
@@ -147,4 +147,4 @@ const getSoldProducts = async (req, res) => {
 }
 
 
-module.exports = { handlePayment, createOrder, createOrderItem, changeOrderStatus, getOrders, getSoldProducts,getAllOrders };
+module.exports = { handlePayment, createOrder, createOrderItem, changeOrderStatus, getOrders, getSoldProducts, getAllOrders };

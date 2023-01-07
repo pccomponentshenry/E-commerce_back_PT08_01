@@ -5,6 +5,7 @@ const populateUser = async () => {
   const user = {
     username: "pccomponentshenry",
     email: "pccomponentshenry@gmail.com",
+    isAdmin: true
   };
   await Users.create(user);
 };

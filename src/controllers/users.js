@@ -72,4 +72,33 @@ const postUser = async (req, res) => {
   }
 };
 
-module.exports = { populateUser, getUsers, postUser, getUserById };
+const putUser = async (req, res) => {
+  const { id } = req.params;
+  const { username, email, status, isAdmin } = req.body;
+
+  try {
+
+    const updateParams = {};
+
+    for (item in req.body) {
+      if (req.body[item] && req.body[item]?.length) {
+        updateParams[item] = req.body[item];
+      }
+    }
+
+    await Users.update({ username, email, status }, { where: { id } });
+    await Users.update({
+      isAdmin: true
+    },
+      {
+        where: {
+          isAdmin: false, id
+        }
+      });
+    res.status(200).send("User updated successfully");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+module.exports = { populateUser, getUsers, postUser, getUserById, putUser };

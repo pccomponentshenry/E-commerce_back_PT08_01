@@ -112,6 +112,24 @@ const getOrders = async (req, res) => {
     res.status(400).send(error);
   }
 }
+const getOrdersById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const orders = await Order.findAll({
+      where: { id },
+      include: {
+        model: OrderItem,
+        include: Product
+      }
+    });
+
+    res.status(200).send(orders);
+  }
+  catch (error) {
+    res.status(400).send(error);
+  }
+}
 const getAllOrders = async (req, res) => {
   const allOrder = await Order.findAll({
     include: [{
@@ -147,4 +165,4 @@ const getSoldProducts = async (req, res) => {
 }
 
 
-module.exports = { handlePayment, createOrder, createOrderItem, changeOrderStatus, getOrders, getSoldProducts, getAllOrders };
+module.exports = { handlePayment, createOrder, createOrderItem, changeOrderStatus, getOrders, getSoldProducts, getAllOrders, getOrdersById };

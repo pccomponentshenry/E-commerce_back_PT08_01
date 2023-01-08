@@ -222,26 +222,16 @@ const putProducts = async (req, res) => {
   }
 };
 
-const deleteProduct = async (req, res) => {
-  let { id } = req.params;
+const changeProductStatus = async (req, res) => {
+  const { id, status } = req.body;
 
-  let forDelete = await Product.findByPk(id);
-  if (id && forDelete) {
-    try {
-      await forDelete.update({
-        status: "inactive",
-      });
-      res.status(200).send("Product deleted successfully");
-    } catch (error) {
-      res.status(400).send(error);
-    }
-
-  } else {
-    res.status(400).json({
-      error: "No se recibieron los parámetros necesarios para borrar el producto",
-    });
+  try {
+    const product = await Product.update({ status }, { where: { id } });
+    res.status(200).send(`Product ${status} successfully`);
+  } catch (error) {
+    res.status(400).send(error);
   }
-};
+}
 
 const updateProductStock = async (req, res) => {
   const { userId } = req.params;
@@ -297,7 +287,7 @@ module.exports = {
   getFilteredProducts,
   postProducts,
   putProducts,
-  deleteProduct,
+  changeProductStatus,
   updateProductStock,
   getProductsByUser
 };

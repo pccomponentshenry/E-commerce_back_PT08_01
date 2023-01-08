@@ -5,7 +5,7 @@ const populateUser = async () => {
   const user = {
     username: "pccomponentshenry",
     email: "pccomponentshenry@gmail.com",
-    isAdmin: true
+    isAdmin: "true"
   };
   await Users.create(user);
 };
@@ -86,15 +86,15 @@ const putUser = async (req, res) => {
       }
     }
 
-    await Users.update({ username, email, status }, { where: { id } });
-    await Users.update({
-      isAdmin: true
-    },
-      {
-        where: {
-          isAdmin: false, id
-        }
-      });
+    await Users.update({ username, email, status, isAdmin }, { where: { id } });
+    // await Users.update({
+    //   isAdmin: true
+    // },
+    //   {
+    //     where: {
+    //       isAdmin: false, id
+    //     }
+    //   });
     res.status(200).send("User updated successfully");
   } catch (error) {
     res.status(400).send(error.message);

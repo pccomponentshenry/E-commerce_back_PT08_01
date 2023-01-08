@@ -44,24 +44,25 @@ const getUserById = async (req, res) => {
 };
 
 const postUser = async (req, res) => {
-  const { username, email } = req.body;
+  const { username, email, image } = req.body;
 
   try {
-
     const user = await Users.findOrCreate({
       where: {
         email,
       },
       defaults: {
-        username
+        username,
+        image
       }
     });
 
     const userRegistered = user[1];
     if (userRegistered) {
       axios.post(`${process.env.BACK_URL}/email/register`, {
-        email: email,
         name: username,
+        email,
+        image
       });
     };
 

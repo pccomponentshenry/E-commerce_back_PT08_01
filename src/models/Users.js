@@ -39,8 +39,8 @@ module.exports = (sequelize) => {
       defaultValue: "active",
     },
     isAdmin: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      type: DataTypes.STRING,
+      defaultValue: "false",
     }
   }, {
     timestamps: false

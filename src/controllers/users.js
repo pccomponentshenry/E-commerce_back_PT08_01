@@ -5,6 +5,7 @@ const populateUser = async () => {
   const user = {
     username: "pccomponentshenry",
     email: "pccomponentshenry@gmail.com",
+    isAdmin: "true"
   };
   await Users.create(user);
 };
@@ -43,39 +44,62 @@ const getUserById = async (req, res) => {
 };
 
 const postUser = async (req, res) => {
-  const { username, email, status, isAdmin, location } = req.body;
-  try {
-    /* const findLocation = await Location.findOne({
-      where: {
-        name: location,
-      }
-    }) */
+  const { username, email, image } = req.body;
 
+  try {
     const user = await Users.findOrCreate({
       where: {
         email,
       },
       defaults: {
         username,
-        //locationId: findLocation.dataValues.id
-      },
-      raw: true
+        image
+      }
     });
 
     const userRegistered = user[1];
     if (userRegistered) {
       axios.post(`${process.env.BACK_URL}/email/register`, {
-        email: email,
         name: username,
+        email,
+        image
       });
-    }
+    };
 
-    res.send("User created successfully");
-
+    res.send(user[0]);
   }
   catch (error) {
     res.status(404).json(error.message);
   }
 };
 
-module.exports = { populateUser, getUsers, postUser, getUserById };
+const putUser = async (req, res) => {
+  const { id } = req.params;
+  const { username, email, status, isAdmin } = req.body;
+
+  try {
+
+    const updateParams = {};
+
+    for (item in req.body) {
+      if (req.body[item] && req.body[item]?.length) {
+        updateParams[item] = req.body[item];
+      }
+    }
+
+    await Users.update({ username, email, status, isAdmin }, { where: { id } });
+    // await Users.update({
+    //   isAdmin: true
+    // },
+    //   {
+    //     where: {
+    //       isAdmin: false, id
+    //     }
+    //   });
+    res.status(200).send("User updated successfully");
+  } catch (error) {
+    res.status(400).send(error.message);
+  }
+};
+
+module.exports = { populateUser, getUsers, postUser, getUserById, putUser };

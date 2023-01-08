@@ -60,28 +60,16 @@ const getAllProducts = async (req, res, next) => {
 
 const getProductById = async (req, res) => {
   const { id } = req.params;
-  const products = await allProductsDB();
+
   try {
-    products.forEach(el => {
-      if (el.id == id) {
-        res.json({
-          id: el.id,
-          title: el.title,
-          img:
-            el.img ||
-            el.img.forEach(i => {
-              return i;
-            }),
-          price: el.price,
-          description: el.description,
-          stock: el.stock,
-          category: el.category.name,
-          brand: el.brand.name,
-          user: el.userId,
-          status: el.status,
-        });
-      }
-    });
+    const product = await Product.findByPk(id,
+      {
+        include: {
+          model: Users
+        }
+      });
+
+    res.status(200).send(product);
   } catch (error) {
     res.status(404).send(error);
   }
@@ -222,26 +210,16 @@ const putProducts = async (req, res) => {
   }
 };
 
-const deleteProduct = async (req, res) => {
-  let { id } = req.params;
+const changeProductStatus = async (req, res) => {
+  const { id, status } = req.body;
 
-  let forDelete = await Product.findByPk(id);
-  if (id && forDelete) {
-    try {
-      await forDelete.update({
-        status: "inactive",
-      });
-      res.status(200).send("Product deleted successfully");
-    } catch (error) {
-      res.status(400).send(error);
-    }
-
-  } else {
-    res.status(400).json({
-      error: "No se recibieron los parámetros necesarios para borrar el producto",
-    });
+  try {
+    const product = await Product.update({ status }, { where: { id } });
+    res.status(200).send(`Product ${status} successfully`);
+  } catch (error) {
+    res.status(400).send(error);
   }
-};
+}
 
 const updateProductStock = async (req, res) => {
   const { userId } = req.params;
@@ -297,7 +275,7 @@ module.exports = {
   getFilteredProducts,
   postProducts,
   putProducts,
-  deleteProduct,
+  changeProductStatus,
   updateProductStock,
   getProductsByUser
 };

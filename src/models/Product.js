@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM('active', 'inactive', 'banned'),
+      type: DataTypes.ENUM('active', 'inactive', 'banned', 'deleted'),
       defaultValue: "active",
     },
   }, {

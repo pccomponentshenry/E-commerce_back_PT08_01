@@ -3,9 +3,14 @@ const { UserFavorite, Product, conn } = require('../db');
 const getFavorites = async (req, res) => {
   const { userId } = req.params;
 
-  const sqlQuery = `SELECT p.id FROM products AS p
+  const sqlQuery =
+    `SELECT p.id, p.title, p.img, p.price, p.description, p.stock, c.name AS category, b.name AS brand
+  FROM products AS p 
   JOIN "userFavorites" AS uf ON p.id = uf."productId"
-  WHERE uf."userId" = ${userId}`;
+  JOIN categories AS c ON p."categoryId" = c.id 
+  JOIN brand AS b ON b.id = p."brandId"
+  WHERE uf."userId" = ${userId}
+  ORDER BY uf.id`;
 
   try {
     const products = await conn.query(sqlQuery, {
@@ -13,10 +18,7 @@ const getFavorites = async (req, res) => {
       mapToModel: true,
     });
 
-    ;
-    const favs = [...products.map(p => p.dataValues.id)];
-
-    res.status(200).send(favs);
+    res.status(200).send(products);
   }
   catch (error) {
     res.status(400).send(error);

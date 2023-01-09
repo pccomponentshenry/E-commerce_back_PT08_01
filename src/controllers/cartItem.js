@@ -10,7 +10,8 @@ const getCartItem = async (req, res) => {
     JOIN users AS u ON u.id = ci."userId" 
     JOIN categories AS c ON p."categoryId" = c.id 
     JOIN brand AS b ON b.id = p."brandId"
-    WHERE u.email = '${email}'`;
+    WHERE u.email = '${email}'
+    ORDER BY p.id`;
 
   try {
     const products = await conn.query(sqlQuery,

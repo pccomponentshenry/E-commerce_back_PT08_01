@@ -83,16 +83,17 @@ const postCartItem = async (req, res) => {
           }
         })
       }
+
     }
     else {
-      await CartItem.create({
+      const newCartItem = await CartItem.create({
         productId: product.dataValues.id,
         userId: user.dataValues.id,
         quantity
       });
-    }
 
-    res.send('CartItem created successfully')
+    }
+    res.send(product)
   }
   catch (error) {
     console.log(error.message);

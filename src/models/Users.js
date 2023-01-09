@@ -11,15 +11,15 @@ module.exports = (sequelize) => {
     username: {
       type: DataTypes.STRING(30),
       //allowNull: false,
-    /*   validate: {
-        notNull: {
-          msg: `Username can't be empty`
-        },
-        len: {
-          args: [3, 30],
-          msg: 'Username must have 3 to 30 characters'
-        }
-      } */
+      /*   validate: {
+          notNull: {
+            msg: `Username can't be empty`
+          },
+          len: {
+            args: [3, 30],
+            msg: 'Username must have 3 to 30 characters'
+          }
+        } */
     },
     email: {
       type: DataTypes.STRING(100),
@@ -33,6 +33,9 @@ module.exports = (sequelize) => {
           msg: 'Please provide a valid email'
         },
       }
+    },
+    image: {
+      type: DataTypes.STRING
     },
     status: {
       type: DataTypes.ENUM('active', 'inactive', 'banned', 'deleted'),

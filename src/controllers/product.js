@@ -60,28 +60,16 @@ const getAllProducts = async (req, res, next) => {
 
 const getProductById = async (req, res) => {
   const { id } = req.params;
-  const products = await allProductsDB();
+
   try {
-    products.forEach(el => {
-      if (el.id == id) {
-        res.json({
-          id: el.id,
-          title: el.title,
-          img:
-            el.img ||
-            el.img.forEach(i => {
-              return i;
-            }),
-          price: el.price,
-          description: el.description,
-          stock: el.stock,
-          category: el.category.name,
-          brand: el.brand.name,
-          user: el.userId,
-          status: el.status,
-        });
-      }
-    });
+    const product = await Product.findByPk(id,
+      {
+        include: {
+          model: Users
+        }
+      });
+
+    res.status(200).send(product);
   } catch (error) {
     res.status(404).send(error);
   }

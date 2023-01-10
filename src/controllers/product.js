@@ -1,22 +1,33 @@
 const { conn } = require("../db");
-const { Product, Category, Brand, Users, Order, OrderItem } = require("../db");
+const { Product, Category, Brand, Users, Order, OrderItem, Image } = require("../db");
 const jsonProducts = require("../json/all.json");
 
 const populateProducts = async () => {
-  for (p of jsonProducts) {
-    const category = await Category.findOne({ where: { name: p.category } });
-    const brand = await Brand.findOne({ where: { name: p.brand } });
-    if (p.price !== 0)
-      prod = await Product.create({
-        title: p?.title,
-        img: p?.img,
-        price: p?.price,
-        description: p?.model,
-        stock: Math.floor(Math.random() * 500),
-        categoryId: category?.dataValues?.id,
-        brandId: brand?.dataValues?.id,
-        userId: 1,
-      });
+  try {
+    for (p of jsonProducts) {
+      const category = await Category.findOne({ where: { name: p.category } });
+      const brand = await Brand.findOne({ where: { name: p.brand } });
+      if (p.price !== 0) {
+
+        const prod = await Product.create({
+          title: p?.title,
+          price: p?.price,
+          description: p?.model,
+          stock: Math.floor(Math.random() * 500),
+          categoryId: category?.dataValues?.id,
+          brandId: brand?.dataValues?.id,
+          userId: 1,
+        });
+
+        if (prod) {
+          await Image.create({ productId: prod.dataValues.id, url: p?.img })
+        }
+      }
+    }
+
+  } catch (error) {
+    console.log('error', error);
+
   }
 };
 
@@ -152,7 +163,6 @@ const postProducts = async (req, res) => {
 
     const product = await Product.create({
       title,
-      img,
       price,
       description,
       stock,
@@ -161,8 +171,12 @@ const postProducts = async (req, res) => {
       userId,
     });
 
+
+
     res.send(product);
   } catch (error) {
+    console.log('error', error);
+
     res.status(404).json({ error: error.message });
   }
 };

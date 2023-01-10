@@ -50,7 +50,6 @@ const postFavorites = async (req, res) => {
 
   try {
     const newFav = await UserFavorite.findOrCreate({ where: { userId, productId } });
-    console.log('newFav', newFav);
     res.status(200).send({ newFav, added: true });
   }
 

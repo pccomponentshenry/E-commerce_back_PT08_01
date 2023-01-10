@@ -163,7 +163,6 @@ const postProducts = async (req, res) => {
 
     res.send(product);
   } catch (error) {
-    console.log(error)
     res.status(404).json({ error: error.message });
   }
 };

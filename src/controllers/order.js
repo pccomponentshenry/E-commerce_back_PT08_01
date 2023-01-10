@@ -1,7 +1,7 @@
 const Stripe = require("stripe");
 require('dotenv').config();
 const { DB_PAYMENT } = process.env;
-const { Order, OrderItem, Product, Users, conn } = require('../db');
+const { Order, OrderItem, Product, Users, Address, Location, conn } = require('../db');
 const axios = require("axios");
 
 const stripe = new Stripe(DB_PAYMENT);
@@ -112,6 +112,7 @@ const getOrders = async (req, res) => {
     res.status(400).send(error);
   }
 }
+
 const getOrdersById = async (req, res) => {
   const { id } = req.params;
 
@@ -130,20 +131,33 @@ const getOrdersById = async (req, res) => {
     res.status(400).send(error);
   }
 }
+
 const getAllOrders = async (req, res) => {
+
   const allOrder = await Order.findAll({
-    include: [{
-      model: OrderItem,
-      include: Product
-    }
+    include: [
+      {
+        model: OrderItem,
+        include: Product
+      },
+      {
+        model: Address,
+        include: [
+          {
+            model: Location
+          }
+        ]
+      },
     ]
-  })
+  });
+
   res.status(200).send(allOrder)
 }
 
 const getSoldProducts = async (req, res) => {
 
   try {
+
     let sqlQuery = `SELECT p.id, p.title, p.img, SUM(oi.quantity) AS total 
     FROM "orderItems" AS oi 
     JOIN products AS p ON p.id = oi."productId" 

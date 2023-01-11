@@ -116,7 +116,7 @@ const getFilteredProducts = async (req, res) => {
   const { category, brand, name } = req.query;
   let { min_price, max_price } = req.query;
 
-  let sqlQuery = `SELECT p.id, p.title, p.img, p.price, p.description, p.stock, p.status, c.name AS category, b.name AS brand 
+  let sqlQuery = `SELECT p.id, p.title, p.price, p.description, p.stock, p.status, c.name AS category, b.name AS brand 
   FROM products AS p
   JOIN categories AS c ON p."categoryId" = c.id
   JOIN brand AS b ON p."brandId" = b.id
@@ -139,6 +139,12 @@ const getFilteredProducts = async (req, res) => {
       model: Product,
       mapToModel: true,
     });
+
+    for (let i = 0; i < products.length; i++) {
+      const image = await Image.findOne({ where: { productId: products[i].dataValues.id } });
+      products[i].dataValues.img = image.dataValues.url;
+    }
+
     res.status(200).send(products);
   } catch (error) {
     res.status(404).send("No products found");
@@ -171,19 +177,17 @@ const postProducts = async (req, res) => {
       userId,
     });
 
-
+    await Image.create({ url: img, productId: product.dataValues.id })
 
     res.send(product);
   } catch (error) {
-    console.log('error', error);
-
     res.status(404).json({ error: error.message });
   }
 };
 
 const putProducts = async (req, res) => {
   const { id } = req.params;
-  const { brand, category } = req.body;
+  const { brand, category, img } = req.body;
 
   try {
 

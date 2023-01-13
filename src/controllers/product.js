@@ -64,12 +64,32 @@ const getProductById = async (req, res) => {
   try {
     const product = await Product.findByPk(id,
       {
-        include: {
+        include: [
+        {
           model: Users
+        },
+        {
+          model: Category,
+          attributes: ["name"],
+        },
+        {
+          model: Brand,
+          attributes: ["name"],
         }
-      });
-
-    res.status(200).send(product);
+      ]
+      }
+      );
+    const productId={
+      name:product.title,
+      stock:product.stock,
+      brand:product.brand.name,
+      category:product.category.name,
+      price:product.price,
+      description:product.description,
+      img:product.img
+    }
+    res.status(200).send(productId);
+    console.log(productId)
   } catch (error) {
     res.status(404).send(error);
   }

@@ -80,6 +80,7 @@ const getProductById = async (req, res) => {
       }
       );
     const productId={
+      id:product.id,
       name:product.title,
       stock:product.stock,
       brand:product.brand.name,

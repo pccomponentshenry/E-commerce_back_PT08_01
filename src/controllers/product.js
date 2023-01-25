@@ -62,11 +62,10 @@ const getProductById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const product = await Product.findByPk(id,
-      {
-        include: [
+    const product = await Product.findByPk(id, {
+      include: [
         {
-          model: Users
+          model: Users,
         },
         {
           model: Category,
@@ -75,22 +74,21 @@ const getProductById = async (req, res) => {
         {
           model: Brand,
           attributes: ["name"],
-        }
-      ]
-      }
-      );
-    const productId={
-      id:product.id,
-      name:product.title,
-      stock:product.stock,
-      brand:product.brand.name,
-      category:product.category.name,
-      price:product.price,
-      description:product.description,
-      img:product.img
-    }
+        },
+      ],
+    });
+    const productId = {
+      id: product.id,
+      name: product.title,
+      stock: product.stock,
+      brand: product.brand.name,
+      category: product.category.name,
+      price: product.price,
+      description: product.description,
+      img: product.img,
+    };
     res.status(200).send(productId);
-    console.log(productId)
+    console.log(productId);
   } catch (error) {
     res.status(404).send(error);
   }
@@ -100,27 +98,26 @@ const getProductsByUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const products = await Product.findAll(
-      {
-        where: {
-          userId: id
+    const products = await Product.findAll({
+      where: {
+        userId: id,
+      },
+      include: [
+        {
+          model: Category,
+          attributes: ["name"],
         },
-        include: [
-          {
-            model: Category,
-            attributes: ["name"],
-          },
-          {
-            model: Brand,
-            attributes: ["name"],
-          }
-        ],
-      });
+        {
+          model: Brand,
+          attributes: ["name"],
+        },
+      ],
+    });
     res.status(200).send(products);
   } catch (error) {
     res.status(400).send(error);
   }
-}
+};
 
 const getFilteredProducts = async (req, res) => {
   const { category, brand, name } = req.query;
@@ -156,7 +153,8 @@ const getFilteredProducts = async (req, res) => {
 };
 
 const postProducts = async (req, res) => {
-  const { title, brand, stock, price, description, img, category, userId } = req.body;
+  const { title, brand, stock, price, description, img, category, userId } =
+    req.body;
 
   try {
     const findBrand = await Brand.findOne({
@@ -193,7 +191,6 @@ const putProducts = async (req, res) => {
   const { brand, category } = req.body;
 
   try {
-
     const updateParams = {};
 
     for (item in req.body) {
@@ -239,7 +236,7 @@ const changeProductStatus = async (req, res) => {
   } catch (error) {
     res.status(400).send(error);
   }
-}
+};
 
 const updateProductStock = async (req, res) => {
   const { userId } = req.params;
@@ -248,24 +245,25 @@ const updateProductStock = async (req, res) => {
     const order = await Order.findOne({
       where: {
         userId,
-        status: "created"
+        status: "created",
       },
-      raw: true
+      raw: true,
     });
 
     const orderItems = await OrderItem.findAll({
       where: {
-        orderId: order.id
+        orderId: order.id,
       },
-      raw: true
+      raw: true,
     });
 
     for (let i = 0; i < orderItems.length; i++) {
       const id = orderItems[i].productId;
       const product = await Product.findByPk(id, { raw: true });
-      const newStock = product.stock - orderItems[i].quantity > 0
-        ? product.stock - orderItems[i].quantity
-        : 0;
+      const newStock =
+        product.stock - orderItems[i].quantity > 0
+          ? product.stock - orderItems[i].quantity
+          : 0;
 
       const whereParams = { id };
 
@@ -275,10 +273,10 @@ const updateProductStock = async (req, res) => {
 
       await Product.update(
         {
-          stock: newStock
+          stock: newStock,
         },
         {
-          where: whereParams
+          where: whereParams,
         }
       );
     }
@@ -297,5 +295,5 @@ module.exports = {
   putProducts,
   changeProductStatus,
   updateProductStock,
-  getProductsByUser
+  getProductsByUser,
 };
